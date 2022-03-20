@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.ridi.dto.LoginMember;
 import com.ridi.dto.Member;
 
 public class MemberDao {
@@ -46,5 +48,14 @@ public class MemberDao {
 		}
 	}
 	
-	// 
+	// 로그인
+	public int login(LoginMember memberDTO) {
+		try {
+			int result = jdbcTemplate.queryForObject("SELECT member_value FROM memberinfo WHERE member_Id = ? AND member_Pw = ?", Integer.class, memberDTO.getId(), memberDTO.getPwd());
+			
+			return result;
+		} catch(EmptyResultDataAccessException e) {
+			return HttpStatus.BAD_REQUEST.value();
+		}
+	}
 }
